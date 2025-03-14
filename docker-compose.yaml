@@ -50,7 +50,7 @@ services:
       - "4222:4222"
       - "8222:8222"
     volumes:
-      - ./nats-server.conf:/etc/nats/nats-server.conf
+      - ./.docker/services/nats/nats-server.conf:/etc/nats/nats-server.conf
     command: ["-c", "/etc/nats/nats-server.conf"]
     networks:
       - default-network
