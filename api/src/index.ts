@@ -1,5 +1,5 @@
 import FileRepository from "./FileRepository";
-import { Server } from "./server";
+import { Server } from "./Server";
 import mysql from "mysql2/promise";
 import NatsService from "./NatsService";
 
