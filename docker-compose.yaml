@@ -1,0 +1,64 @@
+services:
+  file-processing-service:
+    container_name: file-processing-service
+    build:
+      context: .
+      dockerfile: .docker/services/file-processing-service/Dockerfile
+    volumes:
+      - shared-data:/app/shared-data
+    networks:
+      - default-network
+    depends_on:
+      - nats
+    env_file:
+      - ./file-processing-service/.env
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: .docker/services/api/Dockerfile
+    restart: always
+    ports:
+      - "3000:4000"
+    networks:
+      - default-network
+    depends_on:
+      - nats
+    volumes:
+      - shared-data:/app/shared-data
+    env_file:
+      - ./api/.env
+  mariadb:
+    container_name: db
+    image: mariadb:latest
+    volumes:
+      - mariadb-uniqcast:/var/lib/mysql
+      - ./.docker/services/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - default-network
+    environment:
+      - MARIADB_ROOT_PASSWORD=admin
+      - MARIADB_DATABASE=uniqcast
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=pass
+  nats:
+    image: nats:latest
+    container_name: nats_server
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    volumes:
+      - ./nats-server.conf:/etc/nats/nats-server.conf
+    command: ["-c", "/etc/nats/nats-server.conf"]
+    networks:
+      - default-network
+volumes:
+  mariadb-uniqcast:
+    driver: local
+  shared-data:
+    driver: local
+networks:
+  default-network:
+    driver: bridge

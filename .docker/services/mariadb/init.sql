@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS uniqcast;
+USE uniqcast;
+
+CREATE TABLE IF NOT EXISTS file_metadata (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    path VARCHAR(255) NOT NULL,
+    processed_file_path VARCHAR(255) DEFAULT NULL,
+    status VARCHAR(64) NOT NULL,
+    error TEXT DEFAULT NULL
+);
